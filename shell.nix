@@ -37,6 +37,7 @@ let
       micromamba activate ${name}
 
       # exec jupyter lab
+      pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
       
       set +e
     '';
