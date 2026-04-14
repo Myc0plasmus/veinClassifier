@@ -3,13 +3,14 @@ import numpy as np
 from PIL import Image
 import torch
 from torch.utils.data import Dataset
+import cv2
 
 class EyeDataset(Dataset):
     def __init__(self, img_dir, mask_dir):
         self.img_dir = img_dir
         self.mask_dir = mask_dir
-        self.imgFiles = os.listdir(img_dir)
-        self.maskFiles = os.listdir(mask_dir)
+        self.imgFiles = sorted(os.listdir(img_dir))
+        self.maskFiles = sorted(os.listdir(mask_dir))
 
     def __len__(self):
         return len(self.imgFiles)
@@ -18,17 +19,20 @@ class EyeDataset(Dataset):
         imgFile = self.imgFiles[idx]
         maskFile = self.maskFiles[idx]
 
-        img = Image.open(os.path.join(self.img_dir, imgFile)).convert("L")
-        mask = Image.open(os.path.join(self.mask_dir, maskFile)).convert("L")
+        img = cv2.imread(os.path.join(self.img_dir, imgFile))
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        mask = cv2.imread(os.path.join(self.mask_dir, maskFile), cv2.IMREAD_GRAYSCALE)
 
-        # img = np.array(img) / 255.0
-        # mask = np.array(mask) / 255.0
+        
+        img = np.array(img) / 255.0
+        mask = np.array(mask) / 255.0
 
-        # binary mask (important!)
-        # mask = (mask > 0.5).astype(np.float32)
+        img = np.transpose(img, (2, 0, 1))
 
-        # img = torch.tensor(img, dtype=torch.float32).unsqueeze(0)
-        # mask = torch.tensor(mask, dtype=torch.float32).unsqueeze(0)
+        mask = (mask > 0.5).astype(np.float32)
+
+        img = torch.tensor(img).float()
+        mask = torch.tensor(mask).unsqueeze(0).float()
 
         return img, mask
-
+        # return img.float(), mask.unsqueeze(0).float()
