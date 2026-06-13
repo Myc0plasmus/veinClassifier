@@ -2,3 +2,5 @@ data/
 .virtual_documents
 .ipynb_checkpoints
 __pycache__
+__marimo__
+*.egg-info/
