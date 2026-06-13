@@ -21,18 +21,24 @@ class EyeDataset(Dataset):
 
         img = cv2.imread(os.path.join(self.img_dir, imgFile))
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        mask = cv2.imread(os.path.join(self.mask_dir, maskFile), cv2.IMREAD_GRAYSCALE)
+        segm = cv2.imread(os.path.join(self.mask_dir, maskFile), cv2.IMREAD_GRAYSCALE)
 
         
         img = np.array(img) / 255.0
-        mask = np.array(mask) / 255.0
+        segm = np.array(segm) / 255.0
 
         img = np.transpose(img, (2, 0, 1))
 
-        mask = (mask > 0.5).astype(np.float32)
+        segm = (segm > 0.5).astype(np.float32)
 
-        img = torch.tensor(img).float()
-        mask = torch.tensor(mask).unsqueeze(0).float()
+        x_img = torch.tensor(img).float()
+        y_segm = torch.tensor(segm).unsqueeze(0).float()
 
-        return img, mask
-        # return img.float(), mask.unsqueeze(0).float()
+        return x_img, y_segm
+
+if __name__ == "__main__":
+    dataset = EyeDataset("data/healthy/", "data/healthy_manualsegm")
+
+    img, mask = dataset[0]
+
+    print(mask.shape)
