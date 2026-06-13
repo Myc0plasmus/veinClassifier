@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 from tqdm import tqdm
-from src.dataset import EyeDataset
+from veinClassifier.dataset import EyeDataset
 
 def extractImagePatches(img, kernel_size=5):
     img = img.unsqueeze(0)  
