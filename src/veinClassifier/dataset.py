@@ -6,11 +6,12 @@ from torch.utils.data import Dataset
 import cv2
 
 class EyeDataset(Dataset):
-    def __init__(self, img_dir, mask_dir):
+    def __init__(self, img_dir, mask_dir, imgFilter=None):
         self.img_dir = img_dir
         self.mask_dir = mask_dir
         self.imgFiles = sorted(os.listdir(img_dir))
         self.maskFiles = sorted(os.listdir(mask_dir))
+        self.imgFilter = imgFilter
 
     def __len__(self):
         return len(self.imgFiles)
@@ -22,7 +23,9 @@ class EyeDataset(Dataset):
         img = cv2.imread(os.path.join(self.img_dir, imgFile))
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         segm = cv2.imread(os.path.join(self.mask_dir, maskFile), cv2.IMREAD_GRAYSCALE)
-
+        
+        if self.imgFilter is not None:
+            img = self.imgFilter(img)
         
         img = np.array(img) / 255.0
         segm = np.array(segm) / 255.0

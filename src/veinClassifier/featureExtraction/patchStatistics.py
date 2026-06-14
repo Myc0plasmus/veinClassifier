@@ -67,8 +67,6 @@ def compute_all_features(patches):
 
     basic = compute_statistics(patches)
     moments = compute_moments(patches)
-
-    
     hu = compute_hu_moments(patches)
 
     return torch.cat([basic, moments, hu], dim=1)
