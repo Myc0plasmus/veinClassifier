@@ -1,10 +1,10 @@
 from sklearn.ensemble import RandomForestClassifier  
 
-def randomForest_train(X_train, y_train):
+def randomForest_train(X_train, y_train, n_estimators):
       
     # Create model  
     model = RandomForestClassifier(  
-        n_estimators=100, 
+        n_estimators=n_estimators, 
         max_depth=25, 
         random_state=42,
         n_jobs=-1
