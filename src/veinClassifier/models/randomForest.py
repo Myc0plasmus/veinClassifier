@@ -4,7 +4,7 @@ def randomForest_train(X_train, y_train):
       
     # Create model  
     model = RandomForestClassifier(  
-        n_estimators=50, 
+        n_estimators=100, 
         max_depth=25, 
         random_state=42,
         n_jobs=-1

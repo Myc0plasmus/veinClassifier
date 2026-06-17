@@ -18,21 +18,21 @@ class UNet(nn.Module):
     def __init__(self):
         super().__init__()
 
-        self.down1 = DoubleConv(3, 64)
+        self.down1 = DoubleConv(3, 8)
         self.pool1 = nn.MaxPool2d(2)
 
-        self.down2 = DoubleConv(64, 128)
+        self.down2 = DoubleConv(8, 16)
         self.pool2 = nn.MaxPool2d(2)
 
-        self.bridge = DoubleConv(128, 256)
+        self.bridge = DoubleConv(16, 32)
 
-        self.up1 = nn.ConvTranspose2d(256, 128, 2, stride=2)
-        self.conv1 = DoubleConv(256, 128)
+        self.up1 = nn.ConvTranspose2d(32, 16, 2, stride=2)
+        self.conv1 = DoubleConv(32, 16)
 
-        self.up2 = nn.ConvTranspose2d(128, 64, 2, stride=2)
-        self.conv2 = DoubleConv(128, 64)
+        self.up2 = nn.ConvTranspose2d(16, 8, 2, stride=2)
+        self.conv2 = DoubleConv(16, 8)
 
-        self.final = nn.Conv2d(64, 1, kernel_size=1)
+        self.final = nn.Conv2d(8, 1, kernel_size=1)
 
     def forward(self, x):
         d1 = self.down1(x)

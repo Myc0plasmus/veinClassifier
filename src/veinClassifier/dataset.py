@@ -6,12 +6,15 @@ from torch.utils.data import Dataset
 import cv2
 
 class EyeDataset(Dataset):
-    def __init__(self, img_dir, mask_dir, imgFilter=None):
+    def __init__(self, img_dir, mask_dir, imgFilter=None, rawImg=False, noGPU=False, transpose=True):
         self.img_dir = img_dir
         self.mask_dir = mask_dir
         self.imgFiles = sorted(os.listdir(img_dir))
         self.maskFiles = sorted(os.listdir(mask_dir))
         self.imgFilter = imgFilter
+        self.rawImg = rawImg
+        self.noGPU = noGPU
+        self.transpose = transpose
 
     def __len__(self):
         return len(self.imgFiles)
@@ -26,13 +29,18 @@ class EyeDataset(Dataset):
         
         if self.imgFilter is not None:
             img = self.imgFilter(img)
+        elif not self.rawImg:
+            img = np.array(img) / 255.0
         
-        img = np.array(img) / 255.0
         segm = np.array(segm) / 255.0
-
-        img = np.transpose(img, (2, 0, 1))
+        
+        if self.transpose:
+            img = np.transpose(img, (2, 0, 1))
 
         segm = (segm > 0.5).astype(np.float32)
+
+        if self.noGPU:
+            return img, segm
 
         x_img = torch.tensor(img).float()
         y_segm = torch.tensor(segm).unsqueeze(0).float()
