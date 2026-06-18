@@ -86,13 +86,14 @@ def train_model(model, train_loader, val_loader, criterion, device, lr=1e-3, epo
 
     return model, history
 
-def plot_history(history, title="Training history"):
+def plot_history(history, title, filename):
     plt.figure()
     plt.plot(history["train_loss"], label="train_loss")
     plt.plot(history["val_loss"], label="val_loss")
     plt.title(title + " - loss")
     plt.xlabel("epoch")
     plt.legend()
+    plt.savefig(f"{filename}_loss.png")
     plt.show()
 
     plt.figure()
@@ -101,4 +102,5 @@ def plot_history(history, title="Training history"):
     plt.title(title + " - F1")
     plt.xlabel("epoch")
     plt.legend()
+    plt.savefig(f"{filename}_f1.png")
     plt.show()
