@@ -7,10 +7,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
-def predict_test_patches(model, dataset, patchStatisticFun=None):
+def predict_test_patches(model, dataset, modelPath, patchStatisticFun=None):
     fig, axes = plt.subplots(3, 5, figsize=(18, 7))
+    results = {}
 
-    names = ["Prediction", "Filtered"]
+    names = ["Prediction", "Corrected"]
     all_metrics = { name:[] for name in names}
 
     for i in tqdm(range(5)):
@@ -75,5 +76,15 @@ def predict_test_patches(model, dataset, patchStatisticFun=None):
         print(f"Precision: {avg_prec:.4f}")
         print(f"Recall   : {avg_rec:.4f}")
         print(f"F1 Score : {avg_f1:.4f}")
+
+        results[name] = {
+                "Model" : modelPath.stem,
+                "Accuracy" : avg_acc,
+                "Precision": avg_prec,
+                "Recall": avg_rec,
+                "F1": avg_f1,
+                }
+
+    return results["Prediction"], results["Corrected"]
 
 
